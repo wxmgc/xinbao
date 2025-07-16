@@ -1,0 +1,340 @@
+	<!doctype html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<title>爱心树表白动画（jQuery+Html5）</title>	    
+		<link type="text/css" rel="stylesheet" href="css/default.css">
+			
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jscex.min.js"></script>
+		<script type="text/javascript" src="js/jscex-parser.js"></script>
+		<script type="text/javascript" src="js/jscex-jit.js"></script>
+		<script type="text/javascript" src="js/jscex-builderbase.min.js"></script>
+		<script type="text/javascript" src="js/jscex-async.min.js"></script>
+		<script type="text/javascript" src="js/jscex-async-powerpack.min.js"></script>
+		<script type="text/javascript" src="js/functions.js" charset="utf-8"></script>
+		<script type="text/javascript" src="js/love.js" charset="utf-8"></script>
+		
+		<style type="text/css">
+			/*.STYLE1 {
+				color: #666666;
+			}*/
+			 #buttonAndAdditionalTextContainer {
+						 text-align: center;
+						 margin-top: 20px;
+						 display: none; /* 初始隐藏 */
+					 }
+			 
+					 #showAdditionalTextButton {
+						 display: flex;
+						 justify-content: center;
+						 align-items: center;
+						 width: 200px;
+						 height: 50px;
+						 background-color: transparent;
+						 border: 2px solid red;
+						 border-radius: 10px;
+						 color: red;
+						 font-size: 16px;
+						 cursor: pointer;
+						 
+					 }
+			 
+					 #additionalText {
+						 display: none; /* 初始隐藏 */
+						 margin-top: 10px;
+						 padding: 10px;
+						 background-color: transparent;
+						 color: red;
+						 font-size: 16px;
+						 text-align: center;
+					 }
+		</style>
+	</head>
+	<body>
+		<!--===音乐：原谅——刘瑞琦======================================-->
+		<audio autoplay>
+				<source src="music/松下優也 - Mr.“Broken Heart” (Instrumental).mp3"/>
+		</audio>  
+		
+		<!--==============================================================-->
+		<div id="main">
+			<div id="error">
+				抱歉！目前您的浏览器无法显示，请更新至最新版本或使用其他主流浏览器，谢谢合作。
+			</div>
+			<div id="wrap">
+				<div id="text">
+					<div id="code">
+						<font color="#FF0000">  	
+							<span class="say">亲爱的欣宝，爱你哟，虽然我们在一起才只有几天</span><br>
+							<span class="say"></span><br>
+							<span class="say">不过爱就要说出口嘛，我们以后还有很久很久哈</span><br>
+							<span class="say"></span><br>
+							<span class="say">喜欢你的理由呢，其实不多，喜欢你也不需要理由</span><br>
+							<span class="say">虽然你常说我花，口花花好像是真的，为了逗你开心嘛</span><br>
+							<span class="say">不过我态度还是很好的，很专一的诶，不许笑！哈哈</span><br>
+							<span class="say">喜欢你一开始是一种感觉，然后是一种态度，再就是一种习惯</span><br>
+							<span class="say">最后，喜欢你便是生活。你可要给我机会把他实现哦，欣宝</span><br>
+							<span class="say">郑重的问你一次，做哥女朋友嘛，好不好，哥好好宠你哦，嘻~</span><br>
+							<span class="say"></span><br>
+							<span class="say"><span class="space"></span> -- 爱你的好哥哥--</span>
+							<span class="say">哈哈嗝儿</span><br>
+						</font>
+						</p>
+					</div>
+				</div>
+				<!-- 按钮和额外文本 -->
+							<div id="buttonAndAdditionalTextContainer">
+								<button id="showAdditionalTextButton">同意！你没得选</button>
+								<div id="additionalText">略略略，跑不掉的，快让哥嘴一个!mua~</div>
+							</div>
+				<div id="clock-box">
+					<span class="STYLE1"></span>
+					<font color="#33CC00">亲爱的欣宝，我喜欢你</font>
+					<span class="STYLE1">已经是……</span>
+					<div id="clock"></div>
+				</div>
+				<canvas id="canvas" width="1100" height="680"></canvas>
+			</div>
+		</div>
+		
+		 <script>
+			 // 获取按钮和额外内容的引用
+			 var button = document.getElementById("showAdditionalTextButton");
+			 var additionalText = document.getElementById("additionalText");
+			 var buttonAndAdditionalTextContainer = document.getElementById("buttonAndAdditionalTextContainer");
+		 
+			 // 添加点击事件监听器
+			 button.addEventListener("click", function(event) {
+				 event.preventDefault(); // 阻止默认链接跳转行为
+				 // 隐藏按钮
+				 button.style.display = "none";
+				 // 显示额外内容
+				 additionalText.style.display = "block";
+				 // 设置要显示的文本
+				 additionalText.textContent = "略略略，跑不掉的，快让哥嘴一个!mua~";
+			 });
+		 
+			 // 显示按钮和额外内容
+			 function showButtonAndAdditionalText() {
+				setTimeout(function() {
+						buttonAndAdditionalTextContainer.style.display = "block";
+					}, 29000); // 这里的延迟时间可以根据需要进行调整
+			 }
+		 
+		   // 在文本输出完成后显示按钮和额外内容
+		   function waitForAllTextOutput() {
+			   // 创建一个 MutationObserver 实例，监视目标节点及其子节点的变动
+			   var observer = new MutationObserver(function(mutationsList, observer) {
+				   // 如果 mutationsList 中包含了子节点变动
+				   for(var mutation of mutationsList) {
+					   if (mutation.type === 'childList') {
+						   // 如果添加了新节点
+						   if (mutation.addedNodes.length > 0) {
+							   // 检查最后一个新增节点是否为标记节点
+							   var lastNode = mutation.addedNodes[mutation.addedNodes.length - 1];
+							   if (lastNode.id === 'showButtonHere') {
+								   // 文本输出完成，显示按钮和额外内容
+								   showButtonAndAdditionalText();
+								   // 停止监视
+								   observer.disconnect();
+								   return;
+							   }
+						   }
+					   }
+				   }
+			   });
+		   
+			   // 监视目标节点（即<div id="main">）及其子节点的变动
+			   observer.observe(document.getElementById("main"), { childList: true, subtree: true });
+		   }
+
+			 
+			 // 调用函数等待所有文本输出完成
+			 waitForAllTextOutput();
+
+		 </script>
+
+
+			
+		<!--==========================================================-->
+		<script>
+			(function(){
+				var canvas = $('#canvas');
+				if (!canvas[0].getContext) {
+					$("#error").show();
+					return false;       
+				}
+		
+				var width = canvas.width();
+				var height = canvas.height();        
+				canvas.attr("width", width);
+				canvas.attr("height", height);
+				var opts = {
+					seed: {
+						x: width / 2 - 20,
+						color: "rgb(190, 26, 37)",
+						scale: 2
+					},
+					branch: [
+						[535, 680, 570, 250, 500, 200, 30, 100, [
+							[540, 500, 455, 417, 340, 400, 13, 100, [
+								[450, 435, 434, 430, 394, 395, 2, 40]
+							]],
+							[550, 445, 600, 356, 680, 345, 12, 100, [
+								[578, 400, 648, 409, 661, 426, 3, 80]
+							]],
+							[539, 281, 537, 248, 534, 217, 3, 40],
+							[546, 397, 413, 247, 328, 244, 9, 80, [
+								[427, 286, 383, 253, 371, 205, 2, 40],
+								[498, 345, 435, 315, 395, 330, 4, 60]
+							]],
+							[546, 357, 608, 252, 678, 221, 6, 100, [
+								[590, 293, 646, 277, 648, 271, 2, 80]
+							]]
+						]] 
+					],
+					bloom: {
+						num: 700,
+						width: 1080,
+						height: 650,
+					},
+					footer: {
+						width: 1200,
+						height: 5,
+						speed: 10,
+					}
+				}
+		
+				var tree = new Tree(canvas[0], width, height, opts);
+				var seed = tree.seed;
+				var foot = tree.footer;
+				var hold = 1;
+		
+				canvas.click(function(e) {
+					var offset = canvas.offset(), x, y;
+					x = e.pageX - offset.left;
+					y = e.pageY - offset.top;
+					if (seed.hover(x, y)) {
+						hold = 0; 
+						canvas.unbind("click");
+						canvas.unbind("mousemove");
+						canvas.removeClass('hand');
+					}
+				}).mousemove(function(e){
+					var offset = canvas.offset(), x, y;
+					x = e.pageX - offset.left;
+					y = e.pageY - offset.top;
+					canvas.toggleClass('hand', seed.hover(x, y));
+				});
+		
+				var seedAnimate = eval(Jscex.compile("async", function () {
+					seed.draw();
+					while (hold) {
+						$await(Jscex.Async.sleep(10));
+					}
+					while (seed.canScale()) {
+						seed.scale(0.95);
+						$await(Jscex.Async.sleep(10));
+					}
+					while (seed.canMove()) {
+						seed.move(0, 2);
+						foot.draw();
+						$await(Jscex.Async.sleep(10));
+					}
+				}));
+		
+				var growAnimate = eval(Jscex.compile("async", function () {
+					do {
+						tree.grow();
+						$await(Jscex.Async.sleep(10));
+					} while (tree.canGrow());
+				}));
+		
+				var flowAnimate = eval(Jscex.compile("async", function () {
+					do {
+						tree.flower(2);
+						$await(Jscex.Async.sleep(10));
+					} while (tree.canFlower());
+				}));
+		
+				var moveAnimate = eval(Jscex.compile("async", function () {
+					tree.snapshot("p1", 240, 0, 610, 680);
+					while (tree.move("p1", 500, 0)) {
+						foot.draw();
+						$await(Jscex.Async.sleep(10));
+					}
+					foot.draw();
+					tree.snapshot("p2", 500, 0, 610, 680);
+		
+					// 会有闪烁不得意这样做
+					canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
+					canvas.css("background", "#ffe");
+					$await(Jscex.Async.sleep(300));
+					canvas.css("background", "none");
+				}));
+		
+				var jumpAnimate = eval(Jscex.compile("async", function () {
+					var ctx = tree.ctx;
+					while (true) {
+						tree.ctx.clearRect(0, 0, width, height);
+						tree.jump();
+						foot.draw();
+						$await(Jscex.Async.sleep(25));
+					}
+				}));
+		
+				var textAnimate = eval(Jscex.compile("async", function () {
+					var together = new Date();
+					together.setFullYear(2024, 1, 15); // 时间年月日
+					together.setHours(16); // 小时
+					together.setMinutes(53); // 分钟
+					together.setSeconds(0); // 秒前一位
+					together.setMilliseconds(2); // 秒第二位
+				
+					$("#code").show().typewriter();
+					$("#clock-box").fadeIn(500);
+					while (true) {
+						timeElapse(together);
+						$await(Jscex.Async.sleep(1000));
+						setTimeout(function() {
+							showButtonAndAdditionalText(); // 在 "哈哈嗝儿" 文本输出后一秒钟显示按钮和额外内容
+						}, 1000);
+					}
+				}));
+				var runAsync = eval(Jscex.compile("async", function () {
+					$await(seedAnimate());
+					$await(growAnimate());
+					$await(flowAnimate());
+					$await(moveAnimate());
+		
+					textAnimate().start();
+		
+					$await(jumpAnimate());
+				}));
+		
+				runAsync().start();
+			})();
+			
+		</script>
+		
+		
+		
+		
+		
+		<!--=======附属说明====================================================-->
+		<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+			<p>
+				
+			</p>
+		</div>
+		
+		
+
+		
+		
+		
+		
+		
+	</body>
+	</html>
